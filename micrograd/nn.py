@@ -34,7 +34,7 @@ class Layer(Module):
 
     def __call__(self, x):
         out = [n(x) for n in self.neurons]
-        return out[0] if len(out) == 1 else out
+        return out
 
     def parameters(self):
         return [p for n in self.neurons for p in n.parameters()]
@@ -51,7 +51,7 @@ class MLP(Module):
     def __call__(self, x):
         for layer in self.layers:
             x = layer(x)
-        return x
+        return x[0] if len(x) == 1 else x
 
     def parameters(self):
         return [p for layer in self.layers for p in layer.parameters()]
