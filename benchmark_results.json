@@ -1,0 +1,48 @@
+{
+  "gpu_available": true,
+  "gpu_usable": true,
+  "backend": "CuPy",
+  "timestamp": "2025-12-14 22:08:29",
+  "raw_operations": {
+    "cpu_time_ms": 104.77,
+    "gpu_time_ms": 58.8,
+    "speedup": 1.78
+  },
+  "micrograd_operations": {
+    "before_gpu": {
+      "backend": "NumPy (CPU)",
+      "avg_time_ms": 13682.7,
+      "individual_runs_ms": [
+        12773.2,
+        13766.61,
+        14508.31
+      ],
+      "final_loss": 1.239135,
+      "config": {
+        "num_samples": 100,
+        "iterations": 20,
+        "model_architecture": "MLP(2, [16, 16, 1])"
+      }
+    },
+    "after_gpu": {
+      "backend": "CuPy (GPU)",
+      "avg_time_ms": 14411.6,
+      "individual_runs_ms": [
+        14345.09,
+        14525.11,
+        14364.6
+      ],
+      "final_loss": 1.163687,
+      "config": {
+        "num_samples": 100,
+        "iterations": 20,
+        "model_architecture": "MLP(2, [16, 16, 1])"
+      }
+    },
+    "performance_improvement": {
+      "time_reduction_ms": -728.89,
+      "time_reduction_percent": -5.33,
+      "speedup": 0.95
+    }
+  }
+}
