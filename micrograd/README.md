@@ -64,6 +64,36 @@ To run the unit tests you will have to install [PyTorch](https://pytorch.org/), 
 python -m pytest
 ```
 
-### License
+## GPU Hardware Acceleration
 
-MIT
+This fork improves micrograd performance by enabling hardware-accelerated execution on GPUs.
+
+The core automatic differentiation logic remains unchanged.
+Numerical operations are routed through a backend that uses:
+- **CuPy (GPU)** when available
+- **NumPy (CPU)** otherwise
+
+### Setup
+
+For GPU acceleration, install CuPy:
+
+```bash
+pip install cupy-cuda11x  # or cupy-cuda12x depending on your CUDA version
+```
+
+The backend automatically falls back to NumPy if CuPy is not available, ensuring compatibility with systems without GPUs.
+
+### Benchmarking
+
+Run the performance benchmark:
+
+```bash
+python run_gpu_demo.py
+```
+
+Or run the benchmark directly:
+
+```bash
+python bench_gpu_vs_cpu.py
+```
+

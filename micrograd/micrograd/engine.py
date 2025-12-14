@@ -1,3 +1,5 @@
+from backend import xp, GPU_AVAILABLE, sync
+np = xp
 
 class Value:
     """ stores a single scalar value and its gradient """
