@@ -64,6 +64,11 @@ class Value:
                 topo.append(v)
         build_topo(self)
 
+        # zero the grads of each node prior to accumulating so that calling
+        # L.backward() twice in a row doesn't produce the wrong answer.
+        for v in reversed(topo):
+            v.grad = 0.0
+
         # go one variable at a time and apply the chain rule to get its gradient
         self.grad = 1
         for v in reversed(topo):
