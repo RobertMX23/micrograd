@@ -1,57 +1,73 @@
 
+class Operator:
+    def __init__(self, name):
+        self.name = name
+
 class Value:
     """ stores a single scalar value and its gradient """
 
-    def __init__(self, data, _children=(), _op=''):
+    def __init__(self, data, _children=(), _op=None):
         self.data = data
         self.grad = 0
         # internal variables used for autograd graph construction
-        self._backward = lambda: None
+        self._backward = lambda root=None,callback=None: None
         self._prev = set(_children)
         self._op = _op # the op that produced this node, for graphviz / debugging / etc
 
     def __add__(self, other):
+        operator = Operator('+')
         other = other if isinstance(other, Value) else Value(other)
-        out = Value(self.data + other.data, (self, other), '+')
+        out = Value(self.data + other.data, (self, other), operator)
 
-        def _backward():
+        def _backward(root=None, callback=None):
             self.grad += out.grad
             other.grad += out.grad
+            if callback: 
+                callback([self,other], out._op, root)
         out._backward = _backward
 
         return out
 
     def __mul__(self, other):
+        operator = Operator('*')
         other = other if isinstance(other, Value) else Value(other)
-        out = Value(self.data * other.data, (self, other), '*')
+        out = Value(self.data * other.data, (self, other), operator)
 
-        def _backward():
+        def _backward(root=None, callback=None):
             self.grad += other.data * out.grad
             other.grad += self.data * out.grad
+            if callback: 
+                callback([self,other], out._op, root)
         out._backward = _backward
 
         return out
 
     def __pow__(self, other):
+        operator = Operator(f'**{other}')
         assert isinstance(other, (int, float)), "only supporting int/float powers for now"
-        out = Value(self.data**other, (self,), f'**{other}')
+        out = Value(self.data**other, (self,), operator)
 
-        def _backward():
+        def _backward(root=None, callback=None):
             self.grad += (other * self.data**(other-1)) * out.grad
+            if callback: 
+                callback([self], out._op, root)
         out._backward = _backward
 
         return out
 
     def relu(self):
-        out = Value(0 if self.data < 0 else self.data, (self,), 'ReLU')
+        operator = Operator('ReLU')
+        out = Value(0 if self.data < 0 else self.data, (self,), operator)
 
-        def _backward():
+        def _backward(root=None,callback=None):
             self.grad += (out.data > 0) * out.grad
+            if callback: 
+                callback([self], out._op, root)
         out._backward = _backward
 
         return out
 
-    def backward(self):
+    def backward(self, callback=None):
 
         # topological order all of the children in the graph
         topo = []
@@ -66,8 +82,9 @@ class Value:
 
         # go one variable at a time and apply the chain rule to get its gradient
         self.grad = 1
+        root=self
         for v in reversed(topo):
-            v._backward()
+            v._backward(root, callback)
 
     def __neg__(self): # -self
         return self * -1
