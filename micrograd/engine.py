@@ -11,8 +11,8 @@ class Value:
         self._op = _op # the op that produced this node, for graphviz / debugging / etc
 
     def __add__(self, other):
-        other = other if isinstance(other, Value) else Value(other)
-        out = Value(self.data + other.data, (self, other), '+')
+        other = other if isinstance(other, self.__class__) else self.__class__(other)
+        out = self.__class__(self.data + other.data, (self, other), '+')
 
         def _backward():
             self.grad += out.grad
@@ -22,8 +22,8 @@ class Value:
         return out
 
     def __mul__(self, other):
-        other = other if isinstance(other, Value) else Value(other)
-        out = Value(self.data * other.data, (self, other), '*')
+        other = other if isinstance(other, self.__class__) else self.__class__(other)
+        out = self.__class__(self.data * other.data, (self, other), '*')
 
         def _backward():
             self.grad += other.data * out.grad
@@ -34,7 +34,7 @@ class Value:
 
     def __pow__(self, other):
         assert isinstance(other, (int, float)), "only supporting int/float powers for now"
-        out = Value(self.data**other, (self,), f'**{other}')
+        out = self.__class__(self.data**other, (self,), f'**{other}')
 
         def _backward():
             self.grad += (other * self.data**(other-1)) * out.grad
@@ -43,7 +43,7 @@ class Value:
         return out
 
     def relu(self):
-        out = Value(0 if self.data < 0 else self.data, (self,), 'ReLU')
+        out = self.__class__(0 if self.data < 0 else self.data, (self,), 'ReLU')
 
         def _backward():
             self.grad += (out.data > 0) * out.grad
