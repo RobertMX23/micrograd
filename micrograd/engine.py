@@ -1,3 +1,4 @@
+import math
 
 class Value:
     """ stores a single scalar value and its gradient """
@@ -50,6 +51,32 @@ class Value:
         out._backward = _backward
 
         return out
+
+    def exp(self):
+        x = math.exp(self.data)
+        out = Value(x, (self,))
+
+        def _backward():
+            self.grad += x * out.grad
+        out._backward = _backward
+
+        return out
+
+    def log(self):
+        x = math.log(self.data)
+        out = Value(x, (self,))
+
+        def _backward():
+            self.grad += out.grad / self.data
+        out._backward = _backward
+
+        return out
+
+    @staticmethod
+    def softmax(*logits):
+        counts = tuple(logit.exp() for logit in logits)
+        total = sum(counts)
+        return tuple(count / total for count in counts)
 
     def backward(self):
 
