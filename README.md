@@ -52,6 +52,7 @@ For added convenience, the notebook `trace_graph.ipynb` produces graphviz visual
 
 ```python
 from micrograd import nn
+from micrograd.engine import Value
 n = nn.Neuron(2)
 x = [Value(1.0), Value(-2.0)]
 y = n(x)
