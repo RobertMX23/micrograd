@@ -19,13 +19,20 @@ class Neuron(Module):
 
     def __call__(self, x):
         act = sum((wi*xi for wi,xi in zip(self.w, x)), self.b)
-        return act.relu() if self.nonlin else act
+        if self.nonlin is True or self.nonlin == 'relu':
+            return act.relu()
+        elif self.nonlin == 'tanh':
+            return act.tanh()
+        elif self.nonlin == 'sigmoid':
+            return act.sigmoid()
+        return act
 
     def parameters(self):
         return self.w + [self.b]
 
     def __repr__(self):
-        return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
+        nonlin_name = self.nonlin if isinstance(self.nonlin, str) else ('ReLU' if self.nonlin else 'Linear')
+        return f"{nonlin_name}Neuron({len(self.w)})"
 
 class Layer(Module):
 
