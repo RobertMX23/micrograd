@@ -18,6 +18,8 @@ class Neuron(Module):
         self.nonlin = nonlin
 
     def __call__(self, x):
+        if not isinstance(x, (list, tuple)):
+            x = [x]
         act = sum((wi*xi for wi,xi in zip(self.w, x)), self.b)
         return act.relu() if self.nonlin else act
 

@@ -65,3 +65,34 @@ def test_more_ops():
     # backward pass went well
     assert abs(amg.grad - apt.grad.item()) < tol
     assert abs(bmg.grad - bpt.grad.item()) < tol
+
+
+def test_nn_modules():
+    from micrograd.nn import Neuron, Layer, MLP
+
+    # test Neuron with scalar input
+    n1 = Neuron(1)
+    out1 = n1(2.0)
+    assert isinstance(out1, Value)
+
+    # test Neuron with list input
+    n2 = Neuron(3)
+    out2 = n2([1.0, 2.0, 3.0])
+    assert isinstance(out2, Value)
+    out2.backward()
+    assert len(n2.parameters()) == 4
+
+    # test Layer
+    l = Layer(3, 2)
+    out_l = l([1.0, 2.0, 3.0])
+    assert len(out_l) == 2
+    assert len(l.parameters()) == 8
+
+    # test MLP
+    mlp = MLP(3, [4, 4, 1])
+    out_mlp = mlp([1.0, 2.0, 3.0])
+    assert isinstance(out_mlp, Value)
+    out_mlp.backward()
+    mlp.zero_grad()
+    assert all(p.grad == 0 for p in mlp.parameters())
+
