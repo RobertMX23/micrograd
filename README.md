@@ -1,17 +1,29 @@
-
 # micrograd
+
+[![PyPI version](https://badge.fury.io/py/micrograd.svg)](https://badge.fury.io/py/micrograd)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 
 ![awww](puppy.jpg)
 
 A tiny Autograd engine (with a bite! :)). Implements backpropagation (reverse-mode autodiff) over a dynamically built DAG and a small neural networks library on top of it with a PyTorch-like API. Both are tiny, with about 100 and 50 lines of code respectively. The DAG only operates over scalar values, so e.g. we chop up each neuron into all of its individual tiny adds and multiplies. However, this is enough to build up entire deep neural nets doing binary classification, as the demo notebook shows. Potentially useful for educational purposes.
 
-### Installation
+## Features
+
+- **Reverse-mode autodiff**: Dynamically built DAG for scalar values.
+- **PyTorch-like API**: Familiar interface for creating and training neural networks.
+- **Tiny footprint**: ~150 lines of code for the engine and neural net library combined.
+- **Visualization**: Built-in tools for generating computational graph visualizations using Graphviz.
+
+## Installation
+
+You can install `micrograd` directly from PyPI:
 
 ```bash
 pip install micrograd
 ```
 
-### Example usage
+## Quick Start
 
 Below is a slightly contrived example showing a number of possible supported operations:
 
@@ -35,6 +47,8 @@ g.backward()
 print(f'{a.grad:.4f}') # prints 138.8338, i.e. the numerical value of dg/da
 print(f'{b.grad:.4f}') # prints 645.5773, i.e. the numerical value of dg/db
 ```
+
+## Advanced Usage
 
 ### Training a neural net
 
@@ -60,7 +74,7 @@ dot = draw_dot(y)
 
 ![2d neuron](gout.svg)
 
-### Running tests
+## Development & Testing
 
 To run the unit tests you will have to install [PyTorch](https://pytorch.org/), which the tests use as a reference for verifying the correctness of the calculated gradients. Then simply:
 
@@ -68,6 +82,13 @@ To run the unit tests you will have to install [PyTorch](https://pytorch.org/), 
 python -m pytest
 ```
 
-### License
+## Contributing
 
-MIT
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.

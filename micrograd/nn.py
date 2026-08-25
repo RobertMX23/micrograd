@@ -51,7 +51,12 @@ class MLP(Module):
     def __call__(self, x):
         for layer in self.layers:
             x = layer(x)
-        return x
+            # A 1-neuron Layer returns a scalar Value. Re-wrap it so a
+            # following layer can still iterate its inputs. Unwrap again
+            # after the last layer so single-output MLPs stay scalars.
+            if isinstance(x, Value):
+                x = [x]
+        return x[0] if len(x) == 1 else x
 
     def parameters(self):
         return [p for layer in self.layers for p in layer.parameters()]
