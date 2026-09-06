@@ -1,4 +1,4 @@
-
+import math
 class Value:
     """ stores a single scalar value and its gradient """
 
@@ -18,7 +18,6 @@ class Value:
             self.grad += out.grad
             other.grad += out.grad
         out._backward = _backward
-
         return out
 
     def __mul__(self, other):
@@ -29,7 +28,6 @@ class Value:
             self.grad += other.data * out.grad
             other.grad += self.data * out.grad
         out._backward = _backward
-
         return out
 
     def __pow__(self, other):
@@ -39,7 +37,16 @@ class Value:
         def _backward():
             self.grad += (other * self.data**(other-1)) * out.grad
         out._backward = _backward
+        return out
 
+    def exp(self):
+        e = math.exp(self.data)
+        out = Value(e, (self, ), 'exp')
+
+        def _backward():
+            self.grad += e * out.grad
+
+        out._backward = _backward
         return out
 
     def relu(self):
@@ -48,11 +55,29 @@ class Value:
         def _backward():
             self.grad += (out.data > 0) * out.grad
         out._backward = _backward
+        return out
 
+    def sigmoid(self):
+        z = self.data
+        s = 1 / (1 + math.exp(-z))
+        out = Value(s, (self, ), 'sigmoid')
+
+        def _backward():
+            self.grad += s * ( 1 - s) * out.grad
+        out._backward = _backward
+        return out
+
+    def tanh(self):
+        z = self.data
+        t = (math.exp(z) - math.exp(-z)) / (math.exp(z) + math.exp(-z))
+        out = Value(t, (self, ), 'tanh')
+
+        def _backward():
+            self.grad += (1 - t**2) * out.grad
+        out._backward = _backward
         return out
 
     def backward(self):
-
         # topological order all of the children in the graph
         topo = []
         visited = set()
@@ -65,7 +90,7 @@ class Value:
         build_topo(self)
 
         # go one variable at a time and apply the chain rule to get its gradient
-        self.grad = 1
+        self.grad = 1.0
         for v in reversed(topo):
             v._backward()
 

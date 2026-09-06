@@ -5,6 +5,7 @@ def test_sanity_check():
 
     x = Value(-4.0)
     z = 2 * x + 2 + x
+    
     q = z.relu() + z * x
     h = (z * z).relu()
     y = h + q + q * x
@@ -34,7 +35,7 @@ def test_more_ops():
     c += c + 1
     c += 1 + c + (-a)
     d += d * 2 + (b + a).relu()
-    d += 3 * d + (b - a).relu()
+    d += 3 * d + (b - a).tanh()
     e = c - d
     f = e**2
     g = f / 2.0
@@ -51,7 +52,7 @@ def test_more_ops():
     c = c + c + 1
     c = c + 1 + c + (-a)
     d = d + d * 2 + (b + a).relu()
-    d = d + 3 * d + (b - a).relu()
+    d = d + 3 * d + (b - a).tanh()
     e = c - d
     f = e**2
     g = f / 2.0

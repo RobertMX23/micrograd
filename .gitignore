@@ -1,1 +1,32 @@
+# Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# builds
+*.egg-info/
+
+# vscode
+.vscode/
+*.code-workspace
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd   
+.Python
+
+# virtual environments
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/   
+
+# environment variables
+.env
