@@ -65,3 +65,15 @@ def test_more_ops():
     # backward pass went well
     assert abs(amg.grad - apt.grad.item()) < tol
     assert abs(bmg.grad - bpt.grad.item()) < tol
+
+
+def test_zero_power_gradients():
+    for base in (0, 0.0, -2.0, 2.0):
+        for exponent in (0, 0.0):
+            x = Value(base)
+            y = x**exponent + 3*x
+            y.backward()
+            reference = torch.tensor(float(base), dtype=torch.float64, requires_grad=True)
+            (reference**exponent + 3*reference).backward()
+            assert y.data == 1 + 3*base
+            assert x.grad == reference.grad.item() == 3
